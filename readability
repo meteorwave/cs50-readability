@@ -1,0 +1,106 @@
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <math.h>
+
+//declare statements:
+int letter_count(string text);
+int word_count(string text);
+int sentence_count(string text);
+int ColemanLiau_Index(int let, int wrd, int sent);
+
+/*main function gets input from the user and establishes variables to be used
+in the Coleman Liau Index function */
+
+int main(void)
+{
+    string text = get_string("Text: ");
+
+    int let = letter_count(text);
+
+    int wrd = word_count(text);
+
+    int sent = sentence_count(text);
+
+    ColemanLiau_Index(let, wrd, sent);
+}
+
+//letter count function to search for any alpha character (lower or uppercase)
+int letter_count(string text)
+{
+    int c = 0;
+
+    for (int i = 0; i < strlen(text); i++)
+    {
+        if (isalpha(text[i]) != 0)
+        {
+            c++;
+        }
+    }
+
+    return c;
+}
+
+//calculate the number of words, assuming no space occurs after the last word
+int word_count(string text)
+{
+    int c = 1;
+
+    for (int i = 0; i < strlen(text); i++)
+    {
+        if (isblank(text[i]) != 0)
+        {
+            c++;
+        }
+    }
+
+    return c;
+}
+
+//function to count sentences based on puncuation
+int sentence_count(string text)
+{
+    int c = 0;
+
+    for (int i = 0; i < strlen(text); i++)
+    {
+        if (text[i] == '!')
+        {
+            c++;
+        }
+        else if (text[i] == '.')
+        {
+            c++;
+        }
+        else if (text[i] == '?')
+        {
+            c++;
+        }
+    }
+
+    return c;
+}
+
+//Function to apply the Coleman Liau Index, based on user input values.
+int ColemanLiau_Index(int let, int wrd, int sent)
+{
+    // Cast values as floats
+    float L = (float) let / (float) wrd * 100;
+    float S = (float) sent / (float) wrd * 100;
+
+    float index = 0.0588 * L - 0.296 * S - 15.8;
+
+    if (index < 1)
+    {
+        return printf("Before Grade 1\n");
+    }
+    else if (index >= 16)
+    {
+        return printf("Grade 16+\n");
+    }
+    else
+    {
+        return printf("Grade %.0f\n", round(index));
+    }
+}
